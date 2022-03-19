@@ -1,0 +1,10 @@
+#pragma once
+#include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <random>
+#include <algorithm>
+#include <chrono>
+#include <locale>
+#include <codecvt>
