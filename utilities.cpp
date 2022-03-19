@@ -4,7 +4,7 @@
 using namespace std;
 
 vector<string> parser(string line,char token){
-    int pos=0;
+    size_t pos=0;
     
     vector<string> tokens;
 
