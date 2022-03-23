@@ -8,12 +8,13 @@ int main(void) {
 	setlocale(LC_ALL, "it_IT.utf8");
 
 	const string emptyLine = "__________________________________________";
-	string fileNameTest = "Test";
 	const char token = '|';
+
+	string fileNameTest = "Test";
+	string firstLine, secondLine,header="",dummystr;
 
 	size_t pos = 0;
 	int numberOfTestsToWrite = 0;
-	string firstLine, secondLine;
 
 	vector<pair<string, vector<string>>> singleQuestions; //first element is the question, second element is an array containing the answers.
 
@@ -21,7 +22,26 @@ int main(void) {
 	fstream Answers("ForTeachers.qsrt", ios::out); //file with answers,for teacher to correct.
 	fstream Tests; //file with answers,for teacher to correct.
 
-	if (!MasterKey.fail() && !Answers.fail()) {
+	Tests.open("TEMPLATE.md",ios::in);
+		while(!Tests.fail()&&getline(Tests,dummystr)){
+			header += dummystr;
+		}
+
+		if(header!=""){
+			Tests.close();
+		}
+
+
+
+	if (!MasterKey.fail() && !Answers.fail() && header!=""){
+
+		//input test name
+		cout << "Name of the test? ";
+		getline(cin,dummystr);
+
+		//change test name in header
+		header.insert(header.find('*')+1,dummystr + '*');
+
 		while (getline(MasterKey, firstLine) && getline(MasterKey, secondLine)) { //read two lines from file
 			singleQuestions.push_back(make_pair(firstLine, parser(secondLine, token))); //filling singleQuestions with couple of question - answer(s)
 		}
@@ -31,9 +51,11 @@ int main(void) {
 			cin >> numberOfTestsToWrite;
 		}while (cin.fail());
 
-		for (int i = 0; i < numberOfTestsToWrite; i++) {
+		for (int i = 0; i < numberOfTestsToWrite ; i++) {
 			//open file
 			Tests.open((fileNameTest + to_string(i) + ".md"), ios::out);
+
+			Tests << header; //inserting header in each test
 
 			////////SHUFFLER/////////
 			random_shuffle(singleQuestions.begin(), singleQuestions.end(), [](int i) -> int { return rand() % i; }); //shuffling questions
@@ -46,7 +68,7 @@ int main(void) {
 			/////////////////////////
 
 			for (int INDEX = 0; INDEX < singleQuestions.size(); INDEX++) {
-				Tests << "\n" << singleQuestions[INDEX].first << endl; //printing question to screen
+				Tests << singleQuestions[INDEX].first << "<br>"; //printing question to screen
 				Answers << "Risposta corretta per la domanda: \"" << singleQuestions[INDEX].first << "\" -> "; //print answer to file for teacher.
 
 				if (singleQuestions[INDEX].second.size() > 1) { //if vector with answers contains more than a question,this means it's a multiple choice question, so i have to print all of them
@@ -55,7 +77,7 @@ int main(void) {
 							answer.replace(pos, 1, ""); //i remove '#' from string, to show it on the file (otherwise, students would have known which is the correct answer.
 							Answers << answer << endl;
 						}
-						Tests << "[] " << answer << endl; //printing answer(s).
+						Tests << "[] " << answer << "<br>"; //printing answer(s).
 					}
 				}
 				else {
@@ -65,9 +87,8 @@ int main(void) {
 				}
 			}
 
-			Tests.close();
+		Tests.close();
 		}
-
 		MasterKey.close();
 		Answers.close();
 	}
