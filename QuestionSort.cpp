@@ -22,7 +22,7 @@ int main(void) {
 	fstream Answers("ForTeachers.qsrt", ios::out); //file with answers,for teacher to correct.
 	fstream Tests; //file with answers,for teacher to correct.
 
-	Tests.open("TEMPLATE.md",ios::in);
+	Tests.open("TEMPLATE.html",ios::in);
 		while(!Tests.fail()&&getline(Tests,dummystr)){
 			header += dummystr;
 		}
@@ -40,7 +40,10 @@ int main(void) {
 		getline(cin,dummystr);
 
 		//change test name in header
-		header.insert(header.find('*')+1,dummystr + '*');
+		while((pos=header.find('*',++pos))!=string::npos){
+			header.insert(++pos,dummystr+"*");
+			pos+=dummystr.length();
+		}
 
 		while (getline(MasterKey, firstLine) && getline(MasterKey, secondLine)) { //read two lines from file
 			singleQuestions.push_back(make_pair(firstLine, parser(secondLine, token))); //filling singleQuestions with couple of question - answer(s)
@@ -53,7 +56,7 @@ int main(void) {
 
 		for (int i = 0; i < numberOfTestsToWrite ; i++) {
 			//open file
-			Tests.open((fileNameTest + to_string(i) + ".md"), ios::out);
+			Tests.open((fileNameTest + to_string(i) + ".html"), ios::out);
 
 			Tests << header; //inserting header in each test
 
@@ -68,7 +71,7 @@ int main(void) {
 			/////////////////////////
 
 			for (int INDEX = 0; INDEX < singleQuestions.size(); INDEX++) {
-				Tests << singleQuestions[INDEX].first << "<br>"; //printing question to screen
+				Tests << "<br>" << singleQuestions[INDEX].first << "<br>"; //printing question to screen
 				Answers << "Risposta corretta per la domanda: \"" << singleQuestions[INDEX].first << "\" -> "; //print answer to file for teacher.
 
 				if (singleQuestions[INDEX].second.size() > 1) { //if vector with answers contains more than a question,this means it's a multiple choice question, so i have to print all of them
