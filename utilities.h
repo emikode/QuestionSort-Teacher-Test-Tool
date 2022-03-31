@@ -3,4 +3,13 @@
 
 using namespace std;
 
-vector <string> parser(string line,char token);
+extern const string emptyLine;
+extern const char token;
+
+class FileManager{
+
+public:
+	bool getHeaderHTML(string& myHeader);
+
+	vector<string> parser(string line);
+};
