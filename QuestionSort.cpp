@@ -7,9 +7,8 @@ int main(void) {
 	srand(time(NULL));
 
 	string fileNameTest = "Test";
-	string firstLine, secondLine,header="",dummystr;
+	string firstLine, secondLine, header = "", dummystr;
 
-	size_t pos = 0;
 	int numberOfTestsToWrite = 0;
 
 	vector<pair<string, vector<string>>> singleQuestions; //first element is the question, second element is an array containing the answers.
@@ -21,54 +20,35 @@ int main(void) {
 	FileManager myManager;
 
 
-	if (!MasterKey.bad() && !Answers.bad() && myManager.getHeaderHTML(header)){
+	if (!MasterKey.bad() && !Answers.bad() && !myManager.getHeaderHTML(header)) {
 
 		//filling vector
 		while (getline(MasterKey, firstLine) && getline(MasterKey, secondLine) && !MasterKey.fail()) { //read two lines from file
 			singleQuestions.push_back(make_pair(firstLine, myManager.parser(secondLine))); //filling singleQuestions with couple of question - answer(s)
 		}
 
-		do{
+		do {
+			cin.clear();
 			cout << "How many tests do you want to prepare? ";
 			cin >> numberOfTestsToWrite;
-		}while (cin.fail(),cin.clear());
+		} while (cin.fail());
 
-		for (int i = 0; i < numberOfTestsToWrite ; i++) {
+		for (int i = 1; i <= numberOfTestsToWrite; i++) {
 			//open file
 			Tests.open((fileNameTest + to_string(i) + ".html"), ios::out);
-			Tests << header; //inserting header in each test
+			if (!Tests.bad()) {
+				Tests << header; //inserting header in each test
 
-			////////SHUFFLER/////////
-			random_shuffle(singleQuestions.begin(), singleQuestions.end(), [](int i) -> int { return rand() % i; }); //shuffling questions
+				myManager.shuffler(singleQuestions); //shuffles both quetions and multiple choice answers
 
-			for (int i = 0; i < singleQuestions.size(); i++) {
-				for (int j = 0; j < singleQuestions[i].second.size(); j++) {
-					random_shuffle(singleQuestions[i].second.begin(), singleQuestions[i].second.end(), [](int i) -> int { return rand() % i; }); //shuffling answers
-				}
-			}
-			/////////////////////////
-
-			for (int INDEX = 0; INDEX < singleQuestions.size(); INDEX++) {
-				Tests << "<br>" << singleQuestions[INDEX].first << "<br>"; //writing question
-				Answers << "Risposta corretta per la domanda: \"" << singleQuestions[INDEX].first << "\" -> "; //print answer to file for teacher.
-
-				if (singleQuestions[INDEX].second.size() > 1) { //if vector with answers contains more than a question,this means it's a multiple choice question, so i have to print all of them
-					for (auto answer : singleQuestions[INDEX].second) {
-						if ((pos = answer.find('#')) != string::npos) { //correct answer
-							answer.replace(pos, 1, ""); //i remove '#' from string, to show it on the file (otherwise, students would have known which is the correct answer.
-							Answers << answer << endl;
-						}
-						Tests << "[] " << answer << "<br>"; //printing answer(s).
-					}
+				if (!myManager.WriteQuestionsOnFile(singleQuestions, Answers, Tests,i==1)) {
+					Tests.close();
 				}
 				else {
-					//otherwise, vector with answer contains only one correct answer, that has to be written by the student.
-					Answers << singleQuestions[INDEX].second[0] << endl;
-					Tests << emptyLine << endl;//open questions.
+					cout << "An Error occurred while writing tests...";
+					exit(EXIT_FAILURE);
 				}
 			}
-
-		Tests.close();
 		}
 		MasterKey.close();
 		Answers.close();
