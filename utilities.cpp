@@ -58,14 +58,14 @@ vector<string> FileManager::parser(string line) {
 void FileManager::shuffler(vector<pair<string, vector<string>>>& fillWithQuestions) {
 	random_shuffle(fillWithQuestions.begin(), fillWithQuestions.end(), [](int i) -> int { return rand() % i; }); //shuffling questions
 
-	for (int i = 0; i < fillWithQuestions.size(); i++) {
+	for (long unsigned int i = 0; i < fillWithQuestions.size(); i++) {
 		random_shuffle(fillWithQuestions[i].second.begin(), fillWithQuestions[i].second.end()); //shuffling answers (the second vector inside the pair)
 	}
 }
 
 bool FileManager::WriteQuestionsOnFile(vector<pair<string, vector<string>>>& singleQuestions, fstream& Answers, fstream& Tests,bool writeAnswersFile) {
 	size_t pos = 0;
-	for (int INDEX = 0; INDEX < singleQuestions.size() && !Tests.fail() && !Answers.fail(); INDEX++) {
+	for (long unsigned int INDEX = 0; INDEX < singleQuestions.size() && !Tests.fail() && !Answers.fail(); INDEX++) {
 		Tests << "<br>" << singleQuestions[INDEX].first << "<br>"; //writing question
 		if(writeAnswersFile)
 			Answers << "Risposta corretta per la domanda: \"" << singleQuestions[INDEX].first << "\" -> "; //print answer to file for teacher.
