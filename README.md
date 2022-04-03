@@ -37,13 +37,16 @@ Yes|no|#bro this is bulls***
 
 ---
 ## Usage
-
 ### Example of "MasterKey.qsrt" file:
 <img src="HowToInsertQuestions.png"/>
 
 ### Running the executable:
-<img src="QuestionSort_TestName.png"/>
-<img src="NumberOfTests.png"/>
+
+|<img src="QuestionSort_TestName.png"/>|<img src="NumberOfTests.png"/>|
+|--------------------------------------|------------------------------|
+
+
+
 
 
 
