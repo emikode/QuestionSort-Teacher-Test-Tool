@@ -5,7 +5,7 @@ QuestionSort, is a simple CLI based tool for teachers, which is able to create c
 
 To use QuestionSort, you have to insert the answers in the "MasterKey.qsrt" file, located in the same directory as the binary file.
 
-### Answers and the multiple-choice question within it (if there are any) will be automatically shuffled.
+### Answers and the multiple-choice questions within it (if there are any) will be automatically shuffled.
 
 ---
 
